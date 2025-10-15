@@ -54,3 +54,71 @@ input, select, button {
   border: 1px solid #333;
   white-space: pre-wrap;
 }
+
+/* =========================
+   MOBILE VIEW (max-width: 600px)
+   ========================= */
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  input, select, button {
+    width: 90%;
+    margin: 8px 0;
+    font-size: 16px;
+  }
+
+  #visualization {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .array-item {
+    min-width: 100%;
+    font-size: 18px;
+  }
+
+  #pseudocode {
+    width: 100%;
+    font-size: 14px;
+    padding: 15px;
+  }
+}
+
+/* =========================
+   DESKTOP VIEW (min-width: 601px)
+   ========================= */
+@media (min-width: 601px) {
+  .controls {
+    display: flex;
+    justify-content: center;
+  }
+
+  input, select, button {
+    width: auto;
+  }
+
+  #visualization {
+    flex-direction: row;
+  }
+
+  .array-item {
+    font-size: 16px;
+  }
+
+  #pseudocode {
+    max-width: 600px;
+    font-size: 16px;
+  }
+}
