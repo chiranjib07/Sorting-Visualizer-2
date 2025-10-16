@@ -3,20 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <title>Sorting Visualizer</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Sorting Visualizer</h1>
 
   <div class="controls">
-    <input 
-      type="text" 
-      id="arrayInput" 
-      placeholder="Enter numbers separated by commas" 
-      aria-label="Array Input">
-
-    <select id="algorithmSelect" aria-label="Algorithm Selection">
+    <input type="number" id="arraySize" placeholder="Number of elements" min="1">
+    <button onclick="generateArray()">Generate</button>
+    <input type="text" id="arrayInput" placeholder="Enter numbers separated by commas">
+    
+    <select id="algorithmSelect">
       <option value="bubble">Bubble Sort</option>
       <option value="insertion">Insertion Sort</option>
       <option value="selection">Selection Sort</option>
@@ -24,9 +22,13 @@
       <option value="quick">Quick Sort</option>
     </select>
 
+    <select id="orderSelect">
+      <option value="asc">Ascending</option>
+      <option value="desc">Descending</option>
+    </select>
+
     <button onclick="startSort()">Sort</button>
-    <button onclick="shuffleArray()">Shuffle</button>
-    <button onclick="resetVisualizer()">Reset</button>
+    <button onclick="resetVisualization()">Reset</button>
   </div>
 
   <div id="visualization"></div>
