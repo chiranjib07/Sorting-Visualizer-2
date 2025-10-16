@@ -1,156 +1,99 @@
-let elements = [];
-let speed = 400;
+let array = [];
+let sorting = false;
 
-function changeSpeed() {
-  const speedSelect = document.getElementById("speedSelect");
-  speed = parseInt(speedSelect.value);
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function createArray(arr) {
+function renderArray() {
   const container = document.getElementById("visualization");
   container.innerHTML = "";
-  elements = [];
-
-  arr.forEach((num, index) => {
-    const el = document.createElement("div");
-    el.classList.add("array-item");
-    el.innerText = num;
-    el.style.transform = `translateX(${index * 60}px)`;
-    container.appendChild(el);
-    elements.push(el);
+  array.forEach(num => {
+    const div = document.createElement("div");
+    div.classList.add("array-item");
+    div.textContent = num;
+    container.appendChild(div);
   });
 }
 
-function showPseudocode(algorithm) {
+function shuffleArray() {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  renderArray();
+}
+
+function resetVisualizer() {
+  array = [];
+  document.getElementById("arrayInput").value = "";
+  document.getElementById("pseudocode").textContent = "";
+  document.getElementById("visualization").innerHTML = "";
+}
+
+function highlight(indices, className) {
+  const items = document.querySelectorAll(".array-item");
+  indices.forEach(i => {
+    if (items[i]) items[i].classList.add(className);
+  });
+}
+
+function clearHighlights() {
+  document.querySelectorAll(".array-item").forEach(el => {
+    el.classList.remove("highlight", "swap");
+  });
+}
+
+function showPseudocode(algo) {
   const code = {
-    bubble: `for i = 0 to n-1:
-  for j = 0 to n-i-1:
-    if A[j] > A[j+1]:
-      swap(A[j], A[j+1])`,
+    bubble: `for i in 0..n-1:
+  for j in 0..n-i-2:
+    if arr[j] > arr[j+1]:
+      swap(arr[j], arr[j+1])`,
 
-    insertion: `for i = 1 to n-1:
-  key = A[i]
+    insertion: `for i in 1..n-1:
+  key = arr[i]
   j = i - 1
-  while j >= 0 and A[j] > key:
-    A[j+1] = A[j]
-    j = j - 1
-  A[j+1] = key`,
+  while j >= 0 and arr[j] > key:
+    arr[j+1] = arr[j]
+    j--
+  arr[j+1] = key`,
 
-    selection: `for i = 0 to n-1:
+    selection: `for i in 0..n-2:
   minIndex = i
-  for j = i+1 to n-1:
-    if A[j] < A[minIndex]:
+  for j in i+1..n-1:
+    if arr[j] < arr[minIndex]:
       minIndex = j
-  swap(A[i], A[minIndex])`
+  swap(arr[i], arr[minIndex])`
   };
-  document.getElementById("pseudocode").innerText = code[algorithm];
+  document.getElementById("pseudocode").textContent = code[algo] || "";
 }
 
-async function bubbleSort(arr) {
-  const n = arr.length;
-  for (let i = 0; i < n - 1; i++) {
-    for (let j = 0; j < n - i - 1; j++) {
-      elements[j].classList.add("highlight");
-      elements[j+1].classList.add("highlight");
-      await sleep(speed);
-
-      if (arr[j] > arr[j+1]) {
-        [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
-        const temp = elements[j].style.transform;
-        elements[j].style.transform = elements[j+1].style.transform;
-        elements[j+1].style.transform = temp;
-        elements[j].classList.add("swap");
-        elements[j+1].classList.add("swap");
-        [elements[j], elements[j+1]] = [elements[j+1], elements[j]];
-        await sleep(speed);
-        elements[j].classList.remove("swap");
-        elements[j+1].classList.remove("swap");
+async function bubbleSort() {
+  const items = document.querySelectorAll(".array-item");
+  for (let i = 0; i < array.length; i++) {
+    for (let j = 0; j < array.length - i - 1; j++) {
+      clearHighlights();
+      highlight([j, j+1], "highlight");
+      await new Promise(res => setTimeout(res, 500));
+      if (array[j] > array[j + 1]) {
+        highlight([j, j+1], "swap");
+        [array[j], array[j + 1]] = [array[j + 1], array[j]];
+        renderArray();
       }
-
-      elements[j].classList.remove("highlight");
-      elements[j+1].classList.remove("highlight");
+      await new Promise(res => setTimeout(res, 400));
     }
-    elements[n - i - 1].classList.add("sorted");
+    document.querySelectorAll(".array-item")[array.length - i - 1].classList.add("sorted");
   }
-  elements[0].classList.add("sorted");
-}
-
-async function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let key = arr[i];
-    let j = i - 1;
-
-    elements[i].classList.add("highlight");
-    await sleep(speed);
-
-    while (j >= 0 && arr[j] > key) {
-      elements[j].classList.add("highlight");
-      await sleep(speed);
-      arr[j + 1] = arr[j];
-
-      const temp = elements[j+1].style.transform;
-      elements[j+1].style.transform = elements[j].style.transform;
-      elements[j].style.transform = temp;
-
-      [elements[j+1], elements[j]] = [elements[j], elements[j+1]];
-      j--;
-    }
-    arr[j + 1] = key;
-
-    elements.forEach(el => el.classList.remove("highlight"));
-  }
-  elements.forEach(el => el.classList.add("sorted"));
-}
-
-async function selectionSort(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    let minIndex = i;
-    elements[minIndex].classList.add("highlight");
-
-    for (let j = i + 1; j < arr.length; j++) {
-      elements[j].classList.add("highlight");
-      await sleep(speed);
-      if (arr[j] < arr[minIndex]) {
-        elements[minIndex].classList.remove("highlight");
-        minIndex = j;
-        elements[minIndex].classList.add("highlight");
-      }
-      elements[j].classList.remove("highlight");
-    }
-
-    if (minIndex !== i) {
-      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-      const temp = elements[i].style.transform;
-      elements[i].style.transform = elements[minIndex].style.transform;
-      elements[minIndex].style.transform = temp;
-      elements[i].classList.add("swap");
-      elements[minIndex].classList.add("swap");
-      [elements[i], elements[minIndex]] = [elements[minIndex], elements[i]];
-      await sleep(speed);
-      elements[i].classList.remove("swap");
-      elements[minIndex].classList.remove("swap");
-    }
-
-    elements[i].classList.remove("highlight");
-    elements[i].classList.add("sorted");
-  }
-  elements[elements.length - 1].classList.add("sorted");
 }
 
 function startSort() {
+  if (sorting) return;
   const input = document.getElementById("arrayInput").value.trim();
-  if (!input) return;
-  const arr = input.split(",").map(Number);
-  createArray(arr);
+  if (!input) return alert("Enter numbers first.");
 
-  const algorithm = document.getElementById("algorithmSelect").value;
-  showPseudocode(algorithm);
+  array = input.split(",").map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+  renderArray();
+  const algo = document.getElementById("algorithmSelect").value;
+  showPseudocode(algo);
+  sorting = true;
 
-  if (algorithm === "bubble") bubbleSort(arr);
-  if (algorithm === "insertion") insertionSort(arr);
-  if (algorithm === "selection") selectionSort(arr);
+  if (algo === "bubble") bubbleSort().then(() => sorting = false);
+  else alert("Only Bubble Sort animated for now. Others can be added similarly.");
 }
