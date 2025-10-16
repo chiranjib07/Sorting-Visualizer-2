@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Sorting Visualizer</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Sorting Visualizer</h1>
 
   <div class="controls">
-    <input type="number" id="arraySize" placeholder="Number of elements" min="1">
-    <button onclick="generateArray()">Generate</button>
-    <input type="text" id="arrayInput" placeholder="Enter numbers separated by commas">
-    
+    <input id="arraySize" type="number" min="1" placeholder="Number of elements">
+    <button id="generateBtn">Generate</button>
+
+    <input id="arrayInput" type="text" placeholder="Or enter numbers e.g. 5,3,8,1">
+
     <select id="algorithmSelect">
-      <option value="bubble">Bubble Sort</option>
-      <option value="insertion">Insertion Sort</option>
-      <option value="selection">Selection Sort</option>
-      <option value="merge">Merge Sort</option>
-      <option value="quick">Quick Sort</option>
+      <option value="bubble">Bubble</option>
+      <option value="insertion">Insertion</option>
+      <option value="selection">Selection</option>
+      <option value="merge">Merge</option>
+      <option value="quick">Quick</option>
     </select>
 
     <select id="orderSelect">
@@ -27,11 +28,12 @@
       <option value="desc">Descending</option>
     </select>
 
-    <button onclick="startSort()">Sort</button>
-    <button onclick="resetVisualization()">Reset</button>
+    <button id="sortBtn">Sort</button>
+    <button id="shuffleBtn">Shuffle</button>
+    <button id="resetBtn">Reset</button>
   </div>
 
-  <div id="visualization"></div>
+  <div id="visualization" aria-live="polite"></div>
   <pre id="pseudocode"></pre>
 
   <script src="script.js"></script>
