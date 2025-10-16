@@ -1,123 +1,104 @@
-/* General */
+/* Basic layout and responsive rules (minimal black UI) */
+:root {
+  --bg: #000;
+  --panel: #111;
+  --muted: #222;
+  --accent: #00ff99;
+  --danger: #f44336;
+  --swap: #2196F3;
+  --sorted: #4CAF50;
+  --text: #fff;
+}
+
+* { box-sizing: border-box; }
 body {
-  background: linear-gradient(-45deg, #0f0f0f, #1a1a1a, #2d2d2d, #1a1a1a);
-  background-size: 400% 400%;
-  animation: gradient 10s ease infinite;
-  color: white;
-  font-family: 'Segoe UI', sans-serif;
-  text-align: center;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
   padding: 20px;
+  text-align: center;
 }
 
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+h1 { margin: 0 0 18px 0; font-size: 1.6rem; }
 
-h1 {
-  margin-bottom: 15px;
-}
-
-/* Controls */
 .controls {
   display: flex;
+  gap: 8px;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 5px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
-input, select, button {
-  padding: 8px;
-  min-width: 140px;
-  background: #222;
-  border: 1px solid #444;
-  color: white;
-  border-radius: 4px;
+.controls input[type="number"],
+.controls input[type="text"],
+.controls select,
+.controls button {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background: var(--panel);
+  color: var(--text);
+  min-width: 110px;
 }
 
-button {
-  background: #00ff99;
-  color: black;
+.controls button {
   cursor: pointer;
-  transition: 0.3s;
+  background: var(--muted);
 }
 
-button:hover {
-  background: #00cc7a;
-}
+.controls button:hover { filter: brightness(1.05); }
 
-/* Visualization */
 #visualization {
   display: flex;
+  gap: 8px;
   justify-content: center;
-  gap: 5px;
-  margin-top: 20px;
-  flex-wrap: wrap;
+  align-items: flex-end;
+  flex-wrap: nowrap;
   overflow-x: auto;
-  padding-bottom: 10px;
-}
-
-.array-item {
-  padding: 10px;
-  min-width: 40px;
-  background: white;
-  color: black;
+  padding: 12px;
   border-radius: 8px;
-  flex: 0 0 auto;
-  transition: transform 0.6s ease, background-color 0.3s;
-  animation: fadeInUp 0.5s ease;
+  background: linear-gradient(180deg, transparent, rgba(255,255,255,0.02));
+  min-height: 70px;
 }
 
-@keyframes fadeInUp {
-  0% { opacity: 0; transform: translateY(40px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-.array-item.highlight {
-  background: crimson;
-  color: white;
-  font-weight: bold;
-}
-
-.array-item.swap {
-  box-shadow: 0 0 20px #00ff99;
-}
-
-.array-item.sorted {
-  background: #00ff99;
-  color: black;
-  box-shadow: 0 0 25px #00ff99;
-}
-
-/* Pseudocode */
-#pseudocode {
-  text-align: left;
-  width: 100%;
-  max-width: 600px;
-  margin: 20px auto;
-  background: #111;
-  padding: 10px;
+/* element boxes */
+.array-item {
+  padding: 12px;
+  min-width: 48px;
+  text-align: center;
+  border-radius: 8px;
+  background: #222;
+  color: #fff;
   border: 1px solid #333;
+  transition: transform 300ms ease, background-color 200ms ease, box-shadow 300ms ease;
+  flex: 0 0 auto;
+}
+
+.array-item.highlight { background: var(--danger); color: white; transform: scale(1.08); }
+.array-item.swap { background: var(--swap); box-shadow: 0 4px 16px rgba(33,150,243,0.18); transform: translateY(-8px); }
+.array-item.sorted { background: var(--sorted); color: black; box-shadow: 0 6px 20px rgba(76,175,80,0.2); }
+
+/* pseudocode */
+#pseudocode {
+  max-width: 760px;
+  margin: 18px auto 0;
+  text-align: left;
+  background: #0d0d0d;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #222;
   white-space: pre-wrap;
+  font-family: monospace;
+  font-size: 13px;
+  color: #dcdcdc;
   overflow-x: auto;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  input, select, button {
-    width: 100%;
-  }
-  .array-item {
-    min-width: 50px;
-    font-size: 16px;
-  }
-  #pseudocode {
-    font-size: 14px;
-  }
+/* mobile adjustments */
+@media (max-width: 640px) {
+  .controls { flex-direction: column; align-items: stretch; gap: 10px; }
+  .controls input[type="text"] { min-width: auto; }
+  #visualization { padding: 10px; gap: 6px; }
+  .array-item { min-width: 56px; font-size: 15px; padding: 10px; }
 }
