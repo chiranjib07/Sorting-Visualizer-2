@@ -1,41 +1,24 @@
-/* Body and general styling remain the same */
-
-#visualization {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-  overflow-x: auto; /* Allow horizontal scroll if array is too long */
-  padding-bottom: 10px; /* Prevent scrollbar overlap */
-}
-
-.array-item {
-  padding: 10px;
-  border: 1px solid #555;
-  min-width: 40px; /* Prevent items from shrinking too small */
-  flex: 0 0 auto;  /* Fix flex shrink for horizontal scroll */
-  transition: background-color 0.3s;
-}
-
-.array-item.highlight {
-  background-color: #f44336;
+/* ✨ Background & general UI */
+body {
+  background: linear-gradient(-45deg, #0f0f0f, #1a1a1a, #2d2d2d, #1a1a1a);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  font-family: 'Segoe UI', sans-serif;
   color: white;
-  font-weight: bold;
-  border: 1px solid #f44336;
+  text-align: center;
+  margin: 0;
+  padding: 30px;
 }
 
-/* Pseudocode responsive */
-#pseudocode {
-  text-align: left;
-  width: 100%; /* Full width on mobile */
-  max-width: 600px; /* Limit on desktop */
-  margin: 20px auto;
-  background: #111;
-  padding: 10px;
-  border: 1px solid #333;
-  white-space: pre-wrap;
-  overflow-x: auto; /* Scroll if lines are long */
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+h1 {
+  font-size: 2rem;
+  text-shadow: 0 0 15px #00ff99;
 }
 
 /* Controls */
@@ -44,14 +27,100 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 5px;
+  margin-bottom: 20px;
 }
 
 input, select, button {
-  flex: 1 1 auto; /* Grow/shrink naturally */
-  min-width: 100px; /* Prevent too small on desktop */
+  flex: 1 1 auto;
+  min-width: 120px;
+  padding: 10px;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+  background: #222;
+  color: white;
+  border-radius: 6px;
+  transition: 0.3s;
 }
 
-/* Mobile-specific */
+button:hover {
+  background: #00ff99;
+  color: black;
+  cursor: pointer;
+}
+
+/* Visualization container */
+#visualization {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  position: relative;
+}
+
+.array-item {
+  padding: 10px;
+  border: 1px solid #555;
+  min-width: 50px;
+  flex: 0 0 auto;
+  text-align: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  color: black;
+  position: relative;
+  transition: transform 0.5s ease, background-color 0.3s;
+  box-shadow: 0 0 15px rgba(0,255,150,0.3);
+  animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Highlight states */
+.array-item.highlight {
+  background-color: crimson;
+  color: white;
+  border: 1px solid crimson;
+  animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.array-item.swap {
+  box-shadow: 0 0 20px #00ff99;
+}
+
+.array-item.sorted {
+  background: #00ff99;
+  color: black;
+  box-shadow: 0 0 25px #00ff99;
+}
+
+/* Pseudocode box */
+#pseudocode {
+  text-align: left;
+  width: 100%;
+  max-width: 600px;
+  margin: 30px auto;
+  background: #111;
+  padding: 15px;
+  border: 1px solid #333;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  font-family: monospace;
+  border-radius: 6px;
+}
+
+/* Mobile responsiveness */
 @media (max-width: 600px) {
   .controls {
     flex-direction: column;
@@ -59,17 +128,12 @@ input, select, button {
   }
 
   input, select, button {
-    width: 100%; /* Full width for mobile */
+    width: 100%;
     margin: 5px 0;
   }
 
-  #visualization {
-    flex-direction: row; /* Keep horizontal scroll */
-    gap: 5px;
-  }
-
   .array-item {
-    min-width: 50px;
+    min-width: 45px;
     font-size: 16px;
   }
 
