@@ -10,34 +10,21 @@
   <h1>Sorting Visualizer</h1>
 
   <div class="controls">
-    <input 
-      type="number" 
-      id="arraySize" 
-      placeholder="Number of elements" 
-      min="1" 
-      aria-label="Array Size">
-      
-    <input 
-      type="text" 
-      id="arrayInput" 
-      placeholder="Enter numbers separated by commas" 
-      aria-label="Array Input">
-
-    <select id="algorithmSelect" aria-label="Algorithm Selection">
+    <input type="number" id="arraySize" placeholder="Number of elements" min="1">
+    <input type="text" id="arrayInput" placeholder="Enter numbers separated by commas">
+    <select id="algorithmSelect">
       <option value="bubble">Bubble Sort</option>
       <option value="insertion">Insertion Sort</option>
       <option value="selection">Selection Sort</option>
       <option value="merge">Merge Sort</option>
       <option value="quick">Quick Sort</option>
     </select>
-
-    <select id="orderSelect" aria-label="Order Selection">
+    <select id="orderSelect">
       <option value="asc">Ascending</option>
       <option value="desc">Descending</option>
     </select>
-
-    <button onclick="generateArray()">Generate</button>
-    <button onclick="startSort()">Sort</button>
+    <button id="generateBtn">Generate</button>
+    <button id="sortBtn">Sort</button>
   </div>
 
   <div id="visualization"></div>
