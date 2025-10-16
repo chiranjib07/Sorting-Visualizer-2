@@ -3,33 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Sorting Visualizer</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1>Sorting Visualizer</h1>
-
-  <div class="controls">
-    <input type="text" id="arrayInput" placeholder="Enter numbers separated by commas">
-    <select id="algorithmSelect">
-      <option value="bubble">Bubble Sort</option>
-      <option value="insertion">Insertion Sort</option>
-      <option value="selection">Selection Sort</option>
-      <option value="merge">Merge Sort</option>
-      <option value="quick">Quick Sort</option>
-    </select>
-    <button onclick="startSort()">Sort</button>
-  </div>
-
-  <div id="visualization"></div>
-  <pre id="pseudocode"></pre>
-
-  <script src="script.js"></script>
-</body><!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Sorting Visualizer</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Important for mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -41,7 +15,7 @@
       id="arrayInput" 
       placeholder="Enter numbers separated by commas" 
       aria-label="Array Input">
-      
+
     <select id="algorithmSelect" aria-label="Algorithm Selection">
       <option value="bubble">Bubble Sort</option>
       <option value="insertion">Insertion Sort</option>
@@ -49,8 +23,10 @@
       <option value="merge">Merge Sort</option>
       <option value="quick">Quick Sort</option>
     </select>
-    
+
     <button onclick="startSort()">Sort</button>
+    <button onclick="shuffleArray()">Shuffle</button>
+    <button onclick="resetVisualizer()">Reset</button>
   </div>
 
   <div id="visualization"></div>
@@ -58,6 +34,4 @@
 
   <script src="script.js"></script>
 </body>
-</html>
-
 </html>
