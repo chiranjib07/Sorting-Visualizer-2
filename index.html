@@ -1,39 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Sorting Visualizer</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Sorting Visualizer</h1>
 
   <div class="controls">
-    <input id="arraySize" type="number" min="1" placeholder="Number of elements">
-    <button id="generateBtn">Generate</button>
+    <input 
+      type="number" 
+      id="arraySize" 
+      placeholder="Number of elements" 
+      min="1" 
+      aria-label="Array Size">
+      
+    <input 
+      type="text" 
+      id="arrayInput" 
+      placeholder="Enter numbers separated by commas" 
+      aria-label="Array Input">
 
-    <input id="arrayInput" type="text" placeholder="Or enter numbers e.g. 5,3,8,1">
-
-    <select id="algorithmSelect">
-      <option value="bubble">Bubble</option>
-      <option value="insertion">Insertion</option>
-      <option value="selection">Selection</option>
-      <option value="merge">Merge</option>
-      <option value="quick">Quick</option>
+    <select id="algorithmSelect" aria-label="Algorithm Selection">
+      <option value="bubble">Bubble Sort</option>
+      <option value="insertion">Insertion Sort</option>
+      <option value="selection">Selection Sort</option>
+      <option value="merge">Merge Sort</option>
+      <option value="quick">Quick Sort</option>
     </select>
 
-    <select id="orderSelect">
+    <select id="orderSelect" aria-label="Order Selection">
       <option value="asc">Ascending</option>
       <option value="desc">Descending</option>
     </select>
 
-    <button id="sortBtn">Sort</button>
-    <button id="shuffleBtn">Shuffle</button>
-    <button id="resetBtn">Reset</button>
+    <button onclick="generateArray()">Generate</button>
+    <button onclick="startSort()">Sort</button>
   </div>
 
-  <div id="visualization" aria-live="polite"></div>
+  <div id="visualization"></div>
   <pre id="pseudocode"></pre>
 
   <script src="script.js"></script>
