@@ -1,10 +1,11 @@
-let array = [];
-let sorting = false;
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-function renderArray() {
+function createArrayElements(array) {
   const container = document.getElementById("visualization");
   container.innerHTML = "";
-  array.forEach(num => {
+  array.forEach((num) => {
     const div = document.createElement("div");
     div.classList.add("array-item");
     div.textContent = num;
@@ -12,225 +13,238 @@ function renderArray() {
   });
 }
 
-function shuffleArray() {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  renderArray();
-}
-
-function resetVisualizer() {
-  array = [];
-  document.getElementById("arrayInput").value = "";
-  document.getElementById("pseudocode").textContent = "";
-  document.getElementById("visualization").innerHTML = "";
-}
-
-function highlight(indices, className) {
+function highlight(indexes) {
   const items = document.querySelectorAll(".array-item");
-  indices.forEach(i => {
-    if (items[i]) items[i].classList.add(className);
-  });
+  indexes.forEach(i => items[i].classList.add("highlight"));
 }
 
-function clearHighlights() {
-  document.querySelectorAll(".array-item").forEach(el => {
-    el.classList.remove("highlight", "swap");
-  });
+function removeHighlight(indexes) {
+  const items = document.querySelectorAll(".array-item");
+  indexes.forEach(i => items[i].classList.remove("highlight"));
 }
 
-function showPseudocode(algo) {
-  const code = {
+function swapElements(i, j) {
+  const container = document.getElementById("visualization");
+  const items = container.querySelectorAll(".array-item");
+  const tempText = items[i].textContent;
+  items[i].textContent = items[j].textContent;
+  items[j].textContent = tempText;
+  items[i].classList.add("swap");
+  items[j].classList.add("swap");
+  setTimeout(() => {
+    items[i].classList.remove("swap");
+    items[j].classList.remove("swap");
+  }, 600);
+}
+
+function showPseudocode(algorithm) {
+  const pseudo = {
     bubble: `for i in 0..n-1:
-  for j in 0..n-i-2:
-    if arr[j] > arr[j+1]:
-      swap(arr[j], arr[j+1])`,
+  for j in 0..n-i-1:
+    if A[j] > A[j+1]:
+      swap(A[j], A[j+1])`,
 
-    insertion: `for i in 1..n-1:
-  key = arr[i]
+    insertion: `for i in 1..n:
+  key = A[i]
   j = i - 1
-  while j >= 0 and arr[j] > key:
-    arr[j+1] = arr[j]
-    j--
-  arr[j+1] = key`,
+  while j >= 0 and A[j] > key:
+    A[j+1] = A[j]
+    j = j - 1
+  A[j+1] = key`,
 
-    selection: `for i in 0..n-2:
+    selection: `for i in 0..n-1:
   minIndex = i
-  for j in i+1..n-1:
-    if arr[j] < arr[minIndex]:
+  for j in i+1..n:
+    if A[j] < A[minIndex]:
       minIndex = j
-  swap(arr[i], arr[minIndex])`,
+  swap(A[i], A[minIndex])`,
 
-    merge: `function mergeSort(arr):
-  if length <= 1: return arr
-  mid = n/2
-  left = mergeSort(arr[0..mid])
-  right = mergeSort(arr[mid+1..n])
-  return merge(left, right)`,
+    merge: `mergeSort(A):
+  if length(A) > 1:
+    mid = length(A)/2
+    L = left half
+    R = right half
+    mergeSort(L)
+    mergeSort(R)
+    merge(L, R, A)`,
 
-    quick: `function quickSort(arr, low, high):
-  if low < high:
-    p = partition(arr, low, high)
-    quickSort(arr, low, p-1)
-    quickSort(arr, p+1, high)`
+    quick: `quickSort(A):
+  if length(A) <= 1:
+    return
+  pivot = A[last]
+  partition array
+  quickSort(left)
+  quickSort(right)`
   };
-  document.getElementById("pseudocode").textContent = code[algo] || "";
+  document.getElementById("pseudocode").textContent = pseudo[algorithm];
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+function updateElements(array) {
+  const container = document.getElementById("visualization");
+  const items = container.querySelectorAll(".array-item");
+  array.forEach((val, i) => items[i].textContent = val);
 }
 
-// -------------------- Sorting Algorithms --------------------
+function markSorted() {
+  const items = document.querySelectorAll(".array-item");
+  items.forEach(el => el.classList.add("sorted"));
+}
 
-async function bubbleSort() {
-  for (let i = 0; i < array.length; i++) {
-    for (let j = 0; j < array.length - i - 1; j++) {
-      clearHighlights();
-      highlight([j, j+1], "highlight");
+function resetVisualization() {
+  document.getElementById("arrayInput").value = "";
+  document.getElementById("visualization").innerHTML = "";
+  document.getElementById("pseudocode").textContent = "";
+  document.getElementById("arraySize").value = "";
+}
+
+/* ---------- Sorting Algorithms ---------- */
+
+async function bubbleSort(array, order) {
+  const n = array.length;
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n - i - 1; j++) {
+      highlight([j, j+1]);
       await sleep(400);
-      if (array[j] > array[j+1]) {
-        highlight([j, j+1], "swap");
-        await sleep(300);
-        [array[j], array[j+1]] = [array[j+1], array[j]];
-        renderArray();
-        await sleep(300);
+      if ((order === "asc" && array[j] > array[j + 1]) || 
+          (order === "desc" && array[j] < array[j + 1])) {
+        [array[j], array[j + 1]] = [array[j + 1], array[j]];
+        swapElements(j, j+1);
+        await sleep(400);
       }
+      removeHighlight([j, j+1]);
     }
-    document.querySelectorAll(".array-item")[array.length - i - 1].classList.add("sorted");
   }
+  markSorted();
 }
 
-async function insertionSort() {
+async function insertionSort(array, order) {
   for (let i = 1; i < array.length; i++) {
     let key = array[i];
     let j = i - 1;
-    while (j >= 0 && array[j] > key) {
-      clearHighlights();
-      highlight([j, j+1], "swap");
+    while (j >= 0 && ((order === "asc" && array[j] > key) || (order === "desc" && array[j] < key))) {
+      highlight([j, j+1]);
       array[j+1] = array[j];
-      j--;
-      renderArray();
+      swapElements(j, j+1);
       await sleep(400);
+      removeHighlight([j, j+1]);
+      j--;
     }
     array[j+1] = key;
-    renderArray();
   }
-  document.querySelectorAll(".array-item").forEach(el => el.classList.add("sorted"));
+  markSorted();
 }
 
-async function selectionSort() {
-  for (let i = 0; i < array.length - 1; i++) {
-    let minIndex = i;
-    for (let j = i + 1; j < array.length; j++) {
-      clearHighlights();
-      highlight([minIndex, j], "highlight");
+async function selectionSort(array, order) {
+  const n = array.length;
+  for (let i = 0; i < n; i++) {
+    let target = i;
+    for (let j = i+1; j < n; j++) {
+      highlight([target, j]);
       await sleep(300);
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
+      if ((order === "asc" && array[j] < array[target]) || (order === "desc" && array[j] > array[target])) {
+        target = j;
       }
+      removeHighlight([target, j]);
     }
-    if (minIndex !== i) {
-      highlight([i, minIndex], "swap");
-      await sleep(300);
-      [array[i], array[minIndex]] = [array[minIndex], array[i]];
-      renderArray();
-      await sleep(300);
+    if (target !== i) {
+      [array[i], array[target]] = [array[target], array[i]];
+      swapElements(i, target);
+      await sleep(400);
     }
-    document.querySelectorAll(".array-item")[i].classList.add("sorted");
   }
-  document.querySelectorAll(".array-item")[array.length - 1].classList.add("sorted");
+  markSorted();
 }
 
-async function mergeSortHelper(l, r) {
-  if (l >= r) return;
-  const m = Math.floor((l + r) / 2);
-  await mergeSortHelper(l, m);
-  await mergeSortHelper(m + 1, r);
-  await merge(l, m, r);
+async function mergeSort(array, left = 0, right = array.length - 1, order = "asc") {
+  if (left >= right) return;
+  const mid = Math.floor((left + right) / 2);
+  await mergeSort(array, left, mid, order);
+  await mergeSort(array, mid + 1, right, order);
+  await merge(array, left, mid, right, order);
+  if (left === 0 && right === array.length - 1) markSorted();
 }
 
-async function merge(l, m, r) {
-  const left = array.slice(l, m + 1);
-  const right = array.slice(m + 1, r + 1);
-  let i = 0, j = 0, k = l;
-  while (i < left.length && j < right.length) {
-    clearHighlights();
-    highlight([k], "highlight");
+async function merge(array, left, mid, right, order) {
+  let leftArr = array.slice(left, mid + 1);
+  let rightArr = array.slice(mid + 1, right + 1);
+  let i = 0, j = 0, k = left;
+  while (i < leftArr.length && j < rightArr.length) {
+    highlight([k]);
     await sleep(300);
-    if (left[i] <= right[j]) {
-      array[k++] = left[i++];
+    if ((order === "asc" && leftArr[i] <= rightArr[j]) || (order === "desc" && leftArr[i] >= rightArr[j])) {
+      array[k] = leftArr[i++];
     } else {
-      array[k++] = right[j++];
+      array[k] = rightArr[j++];
     }
-    renderArray();
-    await sleep(300);
+    updateElements(array);
+    removeHighlight([k]);
+    k++;
   }
-  while (i < left.length) array[k++] = left[i++];
-  while (j < right.length) array[k++] = right[j++];
-  renderArray();
+  while (i < leftArr.length) { array[k++] = leftArr[i++]; updateElements(array); }
+  while (j < rightArr.length) { array[k++] = rightArr[j++]; updateElements(array); }
 }
 
-async function mergeSort() {
-  await mergeSortHelper(0, array.length - 1);
-  document.querySelectorAll(".array-item").forEach(el => el.classList.add("sorted"));
-}
-
-async function quickSortHelper(low, high) {
+async function quickSort(array, low = 0, high = array.length - 1, order = "asc") {
   if (low < high) {
-    let p = await partition(low, high);
-    await quickSortHelper(low, p - 1);
-    await quickSortHelper(p + 1, high);
+    const pi = await partition(array, low, high, order);
+    await quickSort(array, low, pi - 1, order);
+    await quickSort(array, pi + 1, high, order);
   }
+  if (low === 0 && high === array.length - 1) markSorted();
 }
 
-async function partition(low, high) {
-  let pivot = array[high];
-  let i = low;
+async function partition(array, low, high, order) {
+  const pivot = array[high];
+  let i = low - 1;
   for (let j = low; j < high; j++) {
-    clearHighlights();
-    highlight([j, high], "highlight");
+    highlight([j, high]);
     await sleep(300);
-    if (array[j] < pivot) {
-      highlight([i, j], "swap");
-      [array[i], array[j]] = [array[j], array[i]];
-      renderArray();
-      await sleep(300);
+    if ((order === "asc" && array[j] < pivot) || (order === "desc" && array[j] > pivot)) {
       i++;
+      [array[i], array[j]] = [array[j], array[i]];
+      swapElements(i, j);
+      await sleep(300);
     }
+    removeHighlight([j, high]);
   }
-  highlight([i, high], "swap");
-  [array[i], array[high]] = [array[high], array[i]];
-  renderArray();
+  [array[i + 1], array[high]] = [array[high], array[i + 1]];
+  swapElements(i+1, high);
   await sleep(300);
-  return i;
+  return i + 1;
 }
 
-async function quickSort() {
-  await quickSortHelper(0, array.length - 1);
-  document.querySelectorAll(".array-item").forEach(el => el.classList.add("sorted"));
-}
+/* ---------- UI Actions ---------- */
 
-// -------------------- Control --------------------
+function generateArray() {
+  const size = parseInt(document.getElementById("arraySize").value);
+  if (isNaN(size) || size <= 0) return;
+
+  let arr = [];
+  for (let i = 0; i < size; i++) {
+    arr.push(Math.floor(Math.random() * 100));
+  }
+  document.getElementById("arrayInput").value = arr.join(", ");
+  createArrayElements(arr);
+}
 
 function startSort() {
-  if (sorting) return;
-  const input = document.getElementById("arrayInput").value.trim();
-  if (!input) return alert("Enter numbers first.");
+  const array = document.getElementById("arrayInput").value
+    .split(",")
+    .map(x => parseInt(x.trim()))
+    .filter(x => !isNaN(x));
+  if (array.length === 0) return;
 
-  array = input.split(",").map(x => parseInt(x.trim())).filter(x => !isNaN(x));
-  renderArray();
-  const algo = document.getElementById("algorithmSelect").value;
-  showPseudocode(algo);
-  sorting = true;
+  const algorithm = document.getElementById("algorithmSelect").value;
+  const order = document.getElementById("orderSelect").value;
 
-  let promise;
-  if (algo === "bubble") promise = bubbleSort();
-  else if (algo === "insertion") promise = insertionSort();
-  else if (algo === "selection") promise = selectionSort();
-  else if (algo === "merge") promise = mergeSort();
-  else if (algo === "quick") promise = quickSort();
+  createArrayElements(array);
+  showPseudocode(algorithm);
 
-  promise.then(() => sorting = false);
+  switch (algorithm) {
+    case "bubble": bubbleSort(array, order); break;
+    case "insertion": insertionSort(array, order); break;
+    case "selection": selectionSort(array, order); break;
+    case "merge": mergeSort(array, 0, array.length - 1, order); break;
+    case "quick": quickSort(array, 0, array.length - 1, order); break;
+  }
 }
